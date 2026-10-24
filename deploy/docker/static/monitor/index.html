@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crawl4AI Monitor</title>
+    <title>采集服务监控面板</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -85,40 +85,37 @@
     <!-- Header -->
     <header class="border-b border-border px-4 py-2 flex items-center">
         <h1 class="text-lg font-medium flex items-center space-x-4">
-            <img src="/static/assets/logo.png" alt="Crawl4AI" class="h-8">
-            <span class="text-secondary">Monitor</span>
-            <a href="https://github.com/unclecode/crawl4ai" target="_blank" class="flex space-x-1">
-                <img src="https://img.shields.io/github/stars/unclecode/crawl4ai?style=social" alt="GitHub stars" class="h-5">
-            </a>
+            <span class="text-lg">🕷️ <span class="text-primary">网页采集</span></span>
+            <span class="text-secondary">监控面板</span>
         </h1>
 
         <div class="ml-auto flex items-center space-x-4">
             <!-- Token bar -->
             <div class="flex items-center space-x-2">
-                <input id="token-input" type="password" placeholder="API token"
+                <input id="token-input" type="password" placeholder="访问令牌"
                        class="bg-dark border border-border rounded px-2 py-1 text-xs w-48">
-                <button id="token-save" class="px-2 py-1 bg-primary text-dark rounded text-xs hover:bg-primarydim">Set</button>
-                <button id="token-clear" class="px-2 py-1 border border-border rounded text-xs hover:bg-surface">Clear</button>
+                <button id="token-save" class="px-2 py-1 bg-primary text-dark rounded text-xs hover:bg-primarydim">设置</button>
+                <button id="token-clear" class="px-2 py-1 border border-border rounded text-xs hover:bg-surface">清除</button>
                 <span id="token-status" class="text-xs"></span>
             </div>
             <!-- Connection Status -->
             <div class="flex items-center space-x-2">
                 <div id="ws-status" class="flex items-center space-x-1">
                     <div class="w-2 h-2 rounded-full bg-gray-500" id="ws-indicator"></div>
-                    <span class="text-xs text-secondary" id="ws-text">Connecting...</span>
+                    <span class="text-xs text-secondary" id="ws-text">连接中...</span>
                 </div>
             </div>
 
             <!-- Auto-refresh toggle -->
             <div class="flex items-center space-x-2">
-                <label class="text-xs text-secondary">Auto-refresh:</label>
+                <label class="text-xs text-secondary">自动刷新：</label>
                 <button id="auto-refresh-toggle" class="px-2 py-1 rounded text-xs bg-primary text-dark">
-                    ON ⚡1s
+                    开 ⚡1 秒
                 </button>
             </div>
 
             <!-- Navigation -->
-            <a href="/playground" class="text-xs text-secondary hover:text-primary underline">Playground</a>
+            <a href="/playground" class="text-xs text-secondary hover:text-primary underline">试验台</a>
         </div>
     </header>
 
@@ -126,13 +123,13 @@
     <main class="flex-1 overflow-auto p-4 space-y-4">
         <!-- System Health Bar -->
         <section class="bg-surface rounded-lg border border-border p-4">
-            <h2 class="text-sm font-medium mb-3 text-primary">System Health</h2>
+            <h2 class="text-sm font-medium mb-3 text-primary">系统状态</h2>
 
             <div class="grid grid-cols-4 gap-4 mb-4">
                 <!-- CPU -->
                 <div>
                     <div class="flex justify-between text-xs mb-1">
-                        <span class="text-secondary">CPU</span>
+                        <span class="text-secondary">处理器</span>
                         <span id="cpu-percent" class="text-light">--%</span>
                     </div>
                     <div class="w-full bg-dark rounded-full h-2">
@@ -143,7 +140,7 @@
                 <!-- Memory -->
                 <div>
                     <div class="flex justify-between text-xs mb-1">
-                        <span class="text-secondary">Memory</span>
+                        <span class="text-secondary">内存</span>
                         <span id="mem-percent" class="text-light">--%</span>
                     </div>
                     <div class="w-full bg-dark rounded-full h-2">
@@ -154,7 +151,7 @@
                 <!-- Network -->
                 <div>
                     <div class="flex justify-between text-xs mb-1">
-                        <span class="text-secondary">Network</span>
+                        <span class="text-secondary">网络</span>
                         <span id="net-io" class="text-light">--</span>
                     </div>
                     <div class="text-xs text-secondary">⬆<span id="net-sent">0</span> MB / ⬇<span id="net-recv">0</span> MB</div>
@@ -163,10 +160,10 @@
                 <!-- Uptime -->
                 <div>
                     <div class="flex justify-between text-xs mb-1">
-                        <span class="text-secondary">Uptime</span>
+                        <span class="text-secondary">运行时长</span>
                         <span id="uptime" class="text-light">--</span>
                     </div>
-                    <div class="text-xs text-secondary" id="last-update">Updated: never</div>
+                    <div class="text-xs text-secondary" id="last-update">更新时间：尚未更新</div>
                 </div>
             </div>
 
@@ -174,21 +171,21 @@
             <div class="border-t border-border pt-3">
                 <div class="grid grid-cols-3 gap-4 text-xs">
                     <div>
-                        <span class="text-secondary">🔥 Permanent:</span>
-                        <span id="pool-perm" class="text-primary ml-2">INACTIVE (0MB)</span>
+                        <span class="text-secondary">🔥 常驻：</span>
+                        <span id="pool-perm" class="text-primary ml-2">未启用（0MB）</span>
                     </div>
                     <div>
-                        <span class="text-secondary">♨️ Hot:</span>
+                        <span class="text-secondary">♨️ 热池：</span>
                         <span id="pool-hot" class="text-accent ml-2">0 (0MB)</span>
                     </div>
                     <div>
-                        <span class="text-secondary">❄️ Cold:</span>
+                        <span class="text-secondary">❄️ 冷池：</span>
                         <span id="pool-cold" class="text-light ml-2">0 (0MB)</span>
                     </div>
                 </div>
                 <div class="mt-2 text-xs text-secondary">
-                    <span>Janitor: </span><span id="janitor-status">adaptive</span> |
-                    <span>Memory pressure: </span><span id="mem-pressure">LOW</span>
+                    <span>清理策略：</span><span id="janitor-status">自适应</span> |
+                    <span>内存压力：</span><span id="mem-pressure">低</span>
                 </div>
             </div>
         </section>
@@ -198,20 +195,20 @@
             <!-- Requests Section -->
             <section class="bg-surface rounded-lg border border-border overflow-hidden flex flex-col" style="height: 350px;">
                 <div class="px-4 py-2 border-b border-border flex items-center justify-between">
-                    <h3 class="text-sm font-medium text-primary">📝 Requests (<span id="active-count">0</span> active)</h3>
+                    <h3 class="text-sm font-medium text-primary">📝 请求（<span id="active-count">0</span> 个进行中）</h3>
                     <select id="filter-requests" class="bg-dark border border-border rounded px-2 py-1 text-xs">
-                        <option value="all">All</option>
-                        <option value="success">Success</option>
-                        <option value="error">Errors</option>
+                        <option value="all">全部</option>
+                        <option value="success">成功</option>
+                        <option value="error">失败</option>
                     </select>
                 </div>
                 <div class="flex-1 overflow-auto p-3 space-y-2">
                     <div id="active-requests-list" class="text-xs space-y-1 mb-3">
-                        <div class="text-secondary text-center py-2">No active requests</div>
+                        <div class="text-secondary text-center py-2">暂无进行中的请求</div>
                     </div>
-                    <h4 class="text-xs font-medium text-secondary border-t border-border pt-2 mb-2">Recent Completed</h4>
+                    <h4 class="text-xs font-medium text-secondary border-t border-border pt-2 mb-2">最近完成</h4>
                     <div id="completed-requests-list" class="text-xs space-y-1">
-                        <div class="text-secondary text-center py-2">No completed requests</div>
+                        <div class="text-secondary text-center py-2">暂无已完成的请求</div>
                     </div>
                 </div>
             </section>
@@ -219,23 +216,23 @@
             <!-- Browsers Section -->
             <section class="bg-surface rounded-lg border border-border overflow-hidden flex flex-col" style="height: 350px;">
                 <div class="px-4 py-2 border-b border-border flex items-center justify-between">
-                    <h3 class="text-sm font-medium text-primary">🌐 Browsers (<span id="browser-count">0</span>, <span id="browser-mem">0</span>MB)</h3>
-                    <div class="text-xs text-secondary">Reuse: <span id="reuse-rate" class="text-primary">--%</span></div>
+                    <h3 class="text-sm font-medium text-primary">🌐 浏览器（<span id="browser-count">0</span> 个，<span id="browser-mem">0</span>MB）</h3>
+                    <div class="text-xs text-secondary">复用率：<span id="reuse-rate" class="text-primary">--%</span></div>
                 </div>
                 <div class="flex-1 overflow-auto p-3">
                     <table class="w-full text-xs">
                         <thead class="border-b border-border">
                             <tr class="text-secondary text-left">
-                                <th class="py-1 pr-2">Type</th>
-                                <th class="py-1 pr-2">Sig</th>
-                                <th class="py-1 pr-2">Age</th>
-                                <th class="py-1 pr-2">Used</th>
-                                <th class="py-1 pr-2">Hits</th>
-                                <th class="py-1">Act</th>
+                                <th class="py-1 pr-2">类型</th>
+                                <th class="py-1 pr-2">标识</th>
+                                <th class="py-1 pr-2">已运行</th>
+                                <th class="py-1 pr-2">上次使用</th>
+                                <th class="py-1 pr-2">命中</th>
+                                <th class="py-1">操作</th>
                             </tr>
                         </thead>
                         <tbody id="browsers-table-body">
-                            <tr><td colspan="6" class="text-center py-4 text-secondary">No browsers</td></tr>
+                            <tr><td colspan="6" class="text-center py-4 text-secondary">暂无浏览器</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -244,11 +241,11 @@
             <!-- Janitor Section -->
             <section class="bg-surface rounded-lg border border-border overflow-hidden flex flex-col" style="height: 300px;">
                 <div class="px-4 py-2 border-b border-border">
-                    <h3 class="text-sm font-medium text-primary">🧹 Janitor Events</h3>
+                    <h3 class="text-sm font-medium text-primary">🧹 清理记录</h3>
                 </div>
                 <div class="flex-1 overflow-auto p-3">
                     <div id="janitor-log" class="text-xs space-y-1 font-mono">
-                        <div class="text-secondary text-center py-4">No events yet</div>
+                        <div class="text-secondary text-center py-4">暂无记录</div>
                     </div>
                 </div>
             </section>
@@ -256,11 +253,11 @@
             <!-- Errors Section -->
             <section class="bg-surface rounded-lg border border-border overflow-hidden flex flex-col" style="height: 300px;">
                 <div class="px-4 py-2 border-b border-border">
-                    <h3 class="text-sm font-medium text-primary">❌ Errors</h3>
+                    <h3 class="text-sm font-medium text-primary">❌ 错误</h3>
                 </div>
                 <div class="flex-1 overflow-auto p-3">
                     <div id="errors-log" class="text-xs space-y-1">
-                        <div class="text-secondary text-center py-4">No errors</div>
+                        <div class="text-secondary text-center py-4">暂无错误</div>
                     </div>
                 </div>
             </section>
@@ -270,20 +267,20 @@
         <div class="grid grid-cols-2 gap-4">
             <!-- Endpoint Analytics -->
             <section class="bg-surface rounded-lg border border-border p-4">
-                <h2 class="text-sm font-medium mb-3 text-primary">Endpoint Analytics</h2>
+                <h2 class="text-sm font-medium mb-3 text-primary">接口统计</h2>
                 <div class="overflow-x-auto">
                     <table class="w-full text-xs">
                         <thead class="border-b border-border">
                             <tr class="text-secondary text-left">
-                                <th class="py-2 pr-4">Endpoint</th>
-                                <th class="py-2 pr-4 text-right">Count</th>
-                                <th class="py-2 pr-4 text-right">Avg Latency</th>
-                                <th class="py-2 pr-4 text-right">Success%</th>
-                                <th class="py-2 pr-4 text-right">Pool%</th>
+                                <th class="py-2 pr-4">接口</th>
+                                <th class="py-2 pr-4 text-right">次数</th>
+                                <th class="py-2 pr-4 text-right">平均耗时</th>
+                                <th class="py-2 pr-4 text-right">成功率</th>
+                                <th class="py-2 pr-4 text-right">复用池占比</th>
                             </tr>
                         </thead>
                         <tbody id="endpoints-table-body">
-                            <tr><td colspan="5" class="text-center py-4 text-secondary">No data</td></tr>
+                            <tr><td colspan="5" class="text-center py-4 text-secondary">暂无数据</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -292,33 +289,33 @@
             <!-- Resource Timeline -->
             <section class="bg-surface rounded-lg border border-border p-4">
                 <div class="flex items-center justify-between mb-3">
-                    <h2 class="text-sm font-medium text-primary">Resource Timeline (5min)</h2>
+                    <h2 class="text-sm font-medium text-primary">资源曲线（最近 5 分钟）</h2>
                     <select id="timeline-metric" class="bg-dark border border-border rounded px-2 py-1 text-xs">
-                        <option value="memory">Memory %</option>
-                        <option value="requests">Requests/5s</option>
-                        <option value="browsers">Browser Count</option>
+                        <option value="memory">内存占用 %</option>
+                        <option value="requests">每 5 秒请求数</option>
+                        <option value="browsers">浏览器数量</option>
                     </select>
                 </div>
 
                 <svg id="timeline-chart" class="w-full" style="height: 120px;" viewBox="0 0 400 120">
                     <!-- Chart will be drawn here -->
-                    <text x="200" y="60" text-anchor="middle" fill="#D5CEBF" font-size="12">Loading...</text>
+                    <text x="200" y="60" text-anchor="middle" fill="#D5CEBF" font-size="12">加载中...</text>
                 </svg>
             </section>
         </div>
 
         <!-- Control Actions -->
         <section class="bg-surface rounded-lg border border-accent p-4">
-            <h2 class="text-sm font-medium mb-3 text-accent">Control Actions</h2>
+            <h2 class="text-sm font-medium mb-3 text-accent">操作</h2>
             <div class="flex flex-wrap gap-2">
                 <button id="btn-force-cleanup" class="px-3 py-1 bg-accent text-dark rounded text-xs hover:opacity-90">
-                    🧹 Force Cleanup
+                    🧹 强制清理
                 </button>
                 <button id="btn-restart-perm" class="px-3 py-1 bg-primary text-dark rounded text-xs hover:opacity-90">
-                    🔄 Restart Permanent
+                    🔄 重启常驻浏览器
                 </button>
                 <button id="btn-reset-stats" class="px-3 py-1 border border-border rounded text-xs hover:bg-dark">
-                    📊 Reset Stats
+                    📊 重置统计
                 </button>
                 <div class="ml-auto text-xs text-secondary" id="action-status"></div>
             </div>
@@ -347,7 +344,7 @@
                 const val = input.value.trim();
                 if (!val) return;
                 sessionStorage.setItem('crawl4ai_token', val);
-                status.textContent = 'Token saved';
+                status.textContent = '令牌已保存';
                 status.className = 'text-xs text-green-400';
                 setTimeout(() => { status.textContent = ''; }, 2000);
                 // Reconnect WebSocket with new token
@@ -361,7 +358,7 @@
             document.getElementById('token-clear').addEventListener('click', () => {
                 sessionStorage.removeItem('crawl4ai_token');
                 input.value = '';
-                status.textContent = 'Token cleared';
+                status.textContent = '令牌已清除';
                 status.className = 'text-xs text-yellow-400';
                 setTimeout(() => { status.textContent = ''; }, 2000);
             });
@@ -387,19 +384,19 @@
 
             if (status === 'connected') {
                 indicator.classList.add('bg-green-500', 'pulse-fast');
-                text.textContent = 'Live';
+                text.textContent = '实时';
                 text.className = 'text-xs text-green-400';
             } else if (status === 'connecting') {
                 indicator.classList.add('bg-yellow-500', 'pulse-slow');
-                text.textContent = 'Connecting...';
+                text.textContent = '连接中...';
                 text.className = 'text-xs text-yellow-400';
             } else if (status === 'polling') {
                 indicator.classList.add('bg-blue-500', 'pulse-slow');
-                text.textContent = 'Polling';
+                text.textContent = '轮询中';
                 text.className = 'text-xs text-blue-400';
             } else {
                 indicator.classList.add('bg-red-500');
-                text.textContent = message || 'Disconnected';
+                text.textContent = message || '已断开';
                 text.className = 'text-xs text-red-400';
             }
         }
@@ -441,7 +438,7 @@
 
             websocket.onclose = () => {
                 console.log('WebSocket closed');
-                updateConnectionStatus('disconnected', 'Reconnecting...');
+                updateConnectionStatus('disconnected', '重新连接中...');
 
                 if (useWebSocket) {
                     setTimeout(connectWebSocket, 2000 * wsReconnectAttempts);
@@ -494,19 +491,19 @@
             document.getElementById('uptime').textContent = uptime;
 
             const perm = health.pool.permanent;
-            document.getElementById('pool-perm').textContent = `${perm.active ? 'ACTIVE' : 'INACTIVE'} (${perm.memory_mb}MB)`;
+            document.getElementById('pool-perm').textContent = `${perm.active ? '已启用' : '未启用'} (${perm.memory_mb}MB)`;
             document.getElementById('pool-perm').className = perm.active ? 'text-primary ml-2' : 'text-secondary ml-2';
 
             document.getElementById('pool-hot').textContent = `${health.pool.hot.count} (${health.pool.hot.memory_mb}MB)`;
             document.getElementById('pool-cold').textContent = `${health.pool.cold.count} (${health.pool.cold.memory_mb}MB)`;
 
-            document.getElementById('janitor-status').textContent = health.janitor.next_cleanup_estimate;
+            document.getElementById('janitor-status').textContent = health.janitor.next_cleanup_estimate === 'adaptive' ? '自适应' : health.janitor.next_cleanup_estimate;
             const pressure = health.janitor.memory_pressure;
             const pressureEl = document.getElementById('mem-pressure');
-            pressureEl.textContent = pressure;
+            pressureEl.textContent = zhPressure(pressure);
             pressureEl.className = pressure === 'HIGH' ? 'text-red-500' : pressure === 'MEDIUM' ? 'text-yellow-500' : 'text-green-500';
 
-            document.getElementById('last-update').textContent = 'Live: ' + new Date().toLocaleTimeString();
+            document.getElementById('last-update').textContent = '实时：' + new Date().toLocaleTimeString();
         }
 
         // XSS prevention: escape user-supplied content before innerHTML injection
@@ -526,7 +523,7 @@
             const activeList = document.getElementById('active-requests-list');
             if (activeList) {
                 if (requests.active.length === 0) {
-                    activeList.innerHTML = '<div class="text-secondary text-center py-2">No active requests</div>';
+                    activeList.innerHTML = '<div class="text-secondary text-center py-2">暂无进行中的请求</div>';
                 } else {
                     activeList.innerHTML = requests.active.map(req => `
                         <div class="flex items-center justify-between p-2 bg-dark rounded border border-border">
@@ -544,7 +541,7 @@
             const completedList = document.getElementById('completed-requests-list');
             if (completedList) {
                 if (requests.completed.length === 0) {
-                    completedList.innerHTML = '<div class="text-secondary text-center py-2">No completed requests</div>';
+                    completedList.innerHTML = '<div class="text-secondary text-center py-2">暂无已完成的请求</div>';
                 } else {
                     completedList.innerHTML = requests.completed.map(req => `
                         <div class="flex items-center gap-3 p-2 bg-dark rounded">
@@ -564,7 +561,7 @@
             const tbody = document.getElementById('browsers-table-body');
             if (tbody) {
                 if (browsers.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="text-center py-2 text-secondary">No browsers</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center py-2 text-secondary">暂无浏览器</td></tr>';
                 } else {
                     tbody.innerHTML = browsers.map(b => {
                         const typeIcon = b.type === 'permanent' ? '🔥' : b.type === 'hot' ? '♨️' : '❄️';
@@ -572,7 +569,7 @@
 
                         return `
                             <tr class="border-t border-border hover:bg-dark">
-                                <td class="py-1 pr-2"><span class="${typeColor}">${typeIcon} ${b.type}</span></td>
+                                <td class="py-1 pr-2"><span class="${typeColor}">${typeIcon} ${zhType(b.type)}</span></td>
                                 <td class="py-1 pr-2 font-mono text-xs">${b.sig}</td>
                                 <td class="py-1 pr-2">${formatSeconds(b.age_seconds || 0)}</td>
                                 <td class="py-1 pr-2">${formatSeconds(b.last_used_seconds || 0)}</td>
@@ -613,7 +610,7 @@
             const janitorLog = document.getElementById('janitor-log');
             if (janitorLog) {
                 if (events.length === 0) {
-                    janitorLog.innerHTML = '<div class="text-secondary text-center py-4">No events yet</div>';
+                    janitorLog.innerHTML = '<div class="text-secondary text-center py-4">暂无记录</div>';
                 } else {
                     janitorLog.innerHTML = events.slice(0, 10).reverse().map(evt => {
                         const time = new Date(evt.timestamp * 1000).toLocaleTimeString();
@@ -623,8 +620,8 @@
                         return `<div class="p-2 bg-dark rounded">
                             <span class="text-secondary">${time}</span>
                             <span>${icon}</span>
-                            <span class="text-primary">${evt.type}</span>
-                            <span class="text-secondary">sig=${evt.sig}</span>
+                            <span class="text-primary">${zhEvt(evt.type)}</span>
+                            <span class="text-secondary">标识=${evt.sig}</span>
                             <span class="text-xs text-secondary ml-2">${details}</span>
                         </div>`;
                     }).join('');
@@ -636,7 +633,7 @@
             const errorLog = document.getElementById('errors-log');
             if (errorLog) {
                 if (errors.length === 0) {
-                    errorLog.innerHTML = '<div class="text-secondary text-center py-4">No errors</div>';
+                    errorLog.innerHTML = '<div class="text-secondary text-center py-4">暂无错误</div>';
                 } else {
                     errorLog.innerHTML = errors.slice(0, 10).reverse().map(err => {
                         const time = new Date(err.timestamp * 1000).toLocaleTimeString();
@@ -657,7 +654,7 @@
         // ========== Auto-refresh Toggle ==========
         document.getElementById('auto-refresh-toggle').addEventListener('click', function() {
             autoRefresh = !autoRefresh;
-            this.textContent = autoRefresh ? 'ON ⚡1s' : 'OFF';
+            this.textContent = autoRefresh ? '开 ⚡1 秒' : '关';
             this.classList.toggle('bg-primary');
             this.classList.toggle('bg-dark');
             this.classList.toggle('text-dark');
@@ -718,7 +715,7 @@
                 // Pool status
                 const perm = data.pool.permanent;
                 document.getElementById('pool-perm').textContent =
-                    `${perm.active ? 'ACTIVE' : 'INACTIVE'} (${perm.memory_mb}MB)`;
+                    `${perm.active ? '已启用' : '未启用'} (${perm.memory_mb}MB)`;
                 document.getElementById('pool-perm').className = perm.active ? 'text-primary ml-2' : 'text-secondary ml-2';
 
                 document.getElementById('pool-hot').textContent =
@@ -727,13 +724,13 @@
                     `${data.pool.cold.count} (${data.pool.cold.memory_mb}MB)`;
 
                 // Janitor
-                document.getElementById('janitor-status').textContent = data.janitor.next_cleanup_estimate;
+                document.getElementById('janitor-status').textContent = data.janitor.next_cleanup_estimate === 'adaptive' ? '自适应' : data.janitor.next_cleanup_estimate;
                 const pressure = data.janitor.memory_pressure;
                 const pressureEl = document.getElementById('mem-pressure');
-                pressureEl.textContent = pressure;
+                pressureEl.textContent = zhPressure(pressure);
                 pressureEl.className = pressure === 'HIGH' ? 'text-red-500' : pressure === 'MEDIUM' ? 'text-yellow-500' : 'text-green-500';
 
-                document.getElementById('last-update').textContent = 'Updated: ' + new Date().toLocaleTimeString();
+                document.getElementById('last-update').textContent = '更新时间：' + new Date().toLocaleTimeString();
             } catch (e) {
                 console.error('Failed to fetch health:', e);
             }
@@ -750,7 +747,7 @@
                 document.getElementById('active-count').textContent = data.active.length;
 
                 if (data.active.length === 0) {
-                    activeList.innerHTML = '<div class="text-secondary text-center py-2">No active requests</div>';
+                    activeList.innerHTML = '<div class="text-secondary text-center py-2">暂无进行中的请求</div>';
                 } else {
                     activeList.innerHTML = data.active.map(req => `
                         <div class="flex items-center justify-between p-2 bg-dark rounded border border-border">
@@ -766,7 +763,7 @@
                 // Completed requests
                 const completedList = document.getElementById('completed-requests-list');
                 if (data.completed.length === 0) {
-                    completedList.innerHTML = '<div class="text-secondary text-center py-2">No completed requests</div>';
+                    completedList.innerHTML = '<div class="text-secondary text-center py-2">暂无已完成的请求</div>';
                 } else {
                     completedList.innerHTML = data.completed.map(req => `
                         <div class="flex items-center gap-3 p-2 bg-dark rounded">
@@ -795,7 +792,7 @@
 
                 const tbody = document.getElementById('browsers-table-body');
                 if (data.browsers.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="text-center py-2 text-secondary">No browsers</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center py-2 text-secondary">暂无浏览器</td></tr>';
                 } else {
                     tbody.innerHTML = data.browsers.map(b => {
                         const typeIcon = b.type === 'permanent' ? '🔥' : b.type === 'hot' ? '♨️' : '❄️';
@@ -803,7 +800,7 @@
 
                         return `
                             <tr class="border-t border-border hover:bg-dark">
-                                <td class="py-1 pr-2"><span class="${typeColor}">${typeIcon} ${b.type}</span></td>
+                                <td class="py-1 pr-2"><span class="${typeColor}">${typeIcon} ${zhType(b.type)}</span></td>
                                 <td class="py-1 pr-2 font-mono text-xs">${b.sig}</td>
                                 <td class="py-1 pr-2">${formatSeconds(b.age_seconds)}</td>
                                 <td class="py-1 pr-2">${formatSeconds(b.last_used_seconds)}</td>
@@ -831,7 +828,7 @@
 
                 const logEl = document.getElementById('janitor-log');
                 if (data.events.length === 0) {
-                    logEl.innerHTML = '<div class="text-secondary text-center py-4">No events yet</div>';
+                    logEl.innerHTML = '<div class="text-secondary text-center py-4">暂无记录</div>';
                 } else {
                     logEl.innerHTML = data.events.reverse().map(evt => {
                         const time = new Date(evt.timestamp * 1000).toLocaleTimeString();
@@ -841,8 +838,8 @@
                         return `<div class="p-2 bg-dark rounded">
                             <span class="text-secondary">${time}</span>
                             <span>${icon}</span>
-                            <span class="text-primary">${evt.type}</span>
-                            <span class="text-secondary">sig=${evt.sig}</span>
+                            <span class="text-primary">${zhEvt(evt.type)}</span>
+                            <span class="text-secondary">标识=${evt.sig}</span>
                             <span class="text-xs text-secondary ml-2">${details}</span>
                         </div>`;
                     }).join('');
@@ -859,7 +856,7 @@
 
                 const logEl = document.getElementById('errors-log');
                 if (data.errors.length === 0) {
-                    logEl.innerHTML = '<div class="text-secondary text-center py-4">No errors</div>';
+                    logEl.innerHTML = '<div class="text-secondary text-center py-4">暂无错误</div>';
                 } else {
                     logEl.innerHTML = data.errors.reverse().map(err => {
                         const time = new Date(err.timestamp * 1000).toLocaleTimeString();
@@ -888,7 +885,7 @@
                 const endpoints = Object.entries(data);
 
                 if (endpoints.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-secondary">No data</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-secondary">暂无数据</td></tr>';
                 } else {
                     tbody.innerHTML = endpoints.map(([endpoint, stats]) => `
                         <tr class="border-t border-border">
@@ -937,7 +934,7 @@
                 text.setAttribute('text-anchor', 'middle');
                 text.setAttribute('fill', '#D5CEBF');
                 text.setAttribute('font-size', '12');
-                text.textContent = 'No data';
+                text.textContent = '暂无数据';
                 svg.appendChild(text);
                 return;
             }
@@ -1016,7 +1013,7 @@
 
         // ========== Control Actions ==========
         async function killBrowser(sig) {
-            if (!confirm(`Kill browser ${sig}?`)) return;
+            if (!confirm(`确定关闭浏览器 ${sig}？`)) return;
 
             try {
                 const res = await authFetch('/monitor/actions/kill_browser', {
@@ -1026,15 +1023,15 @@
                 });
                 const data = await res.json();
 
-                showActionStatus(data.success ? `✅ Killed ${sig}` : `❌ Failed to kill`, data.success);
+                showActionStatus(data.success ? `✅ 已关闭 ${sig}` : `❌ 关闭失败`, data.success);
                 if (data.success) fetchBrowsers();
             } catch (e) {
-                showActionStatus('❌ Error: ' + e.message, false);
+                showActionStatus('❌ 出错：' + e.message, false);
             }
         }
 
         async function restartBrowser(sig) {
-            if (!confirm(`Restart browser ${sig}?`)) return;
+            if (!confirm(`确定重启浏览器 ${sig}？`)) return;
 
             try {
                 const res = await authFetch('/monitor/actions/restart_browser', {
@@ -1044,29 +1041,29 @@
                 });
                 const data = await res.json();
 
-                showActionStatus(data.success ? `✅ Restarted ${sig}` : `❌ Failed to restart`, data.success);
+                showActionStatus(data.success ? `✅ 已重启 ${sig}` : `❌ 重启失败`, data.success);
                 if (data.success) fetchBrowsers();
             } catch (e) {
-                showActionStatus('❌ Error: ' + e.message, false);
+                showActionStatus('❌ 出错：' + e.message, false);
             }
         }
 
         document.getElementById('btn-force-cleanup').addEventListener('click', async () => {
-            if (!confirm('Force cleanup all cold pool browsers?')) return;
+            if (!confirm('确定强制清理冷池里的全部浏览器？')) return;
 
             try {
                 const res = await authFetch('/monitor/actions/cleanup', {method: 'POST'});
                 const data = await res.json();
 
-                showActionStatus(`✅ Killed ${data.killed_browsers} browsers`, true);
+                showActionStatus(`✅ 已关闭 ${data.killed_browsers} 个浏览器`, true);
                 fetchAll();
             } catch (e) {
-                showActionStatus('❌ Error: ' + e.message, false);
+                showActionStatus('❌ 出错：' + e.message, false);
             }
         });
 
         document.getElementById('btn-restart-perm').addEventListener('click', async () => {
-            if (!confirm('Restart permanent browser? This will briefly interrupt service.')) return;
+            if (!confirm('确定重启常驻浏览器？重启期间服务会短暂中断。')) return;
 
             try {
                 const res = await authFetch('/monitor/actions/restart_browser', {
@@ -1076,24 +1073,24 @@
                 });
                 const data = await res.json();
 
-                showActionStatus(data.success ? '✅ Permanent browser restarted' : '❌ Failed', data.success);
+                showActionStatus(data.success ? '✅ 常驻浏览器已重启' : '❌ 失败', data.success);
                 fetchAll();
             } catch (e) {
-                showActionStatus('❌ Error: ' + e.message, false);
+                showActionStatus('❌ 出错：' + e.message, false);
             }
         });
 
         document.getElementById('btn-reset-stats').addEventListener('click', async () => {
-            if (!confirm('Reset all endpoint statistics?')) return;
+            if (!confirm('确定重置全部接口统计？')) return;
 
             try {
                 const res = await authFetch('/monitor/stats/reset', {method: 'POST'});
                 const data = await res.json();
 
-                showActionStatus('✅ Stats reset', true);
+                showActionStatus('✅ 统计已重置', true);
                 fetchEndpointStats();
             } catch (e) {
-                showActionStatus('❌ Error: ' + e.message, false);
+                showActionStatus('❌ 出错：' + e.message, false);
             }
         });
 
@@ -1105,17 +1102,22 @@
         }
 
         // ========== Utility Functions ==========
+        // 界面文字中文化：浏览器类型、清理事件、内存压力
+        const zhType = (t) => ({ permanent: '常驻', hot: '热池', cold: '冷池' }[t] || t);
+        const zhEvt = (t) => ({ close_cold: '关闭冷池浏览器', close_hot: '关闭热池浏览器', promote: '升入热池' }[t] || t);
+        const zhPressure = (p) => ({ LOW: '低', MEDIUM: '中', HIGH: '高' }[p] || p);
+
         function formatUptime(seconds) {
             const h = Math.floor(seconds / 3600);
             const m = Math.floor((seconds % 3600) / 60);
-            return `${h}h ${m}m`;
+            return `${h} 小时 ${m} 分`;
         }
 
         function formatSeconds(seconds) {
-            if (seconds < 60) return `${seconds}s`;
+            if (seconds < 60) return `${seconds} 秒`;
             const m = Math.floor(seconds / 60);
             const s = seconds % 60;
-            return `${m}m ${s}s`;
+            return `${m} 分 ${s} 秒`;
         }
 
         // ========== Filter change handler ==========

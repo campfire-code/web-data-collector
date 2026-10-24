@@ -19,15 +19,23 @@ cp .env.example .env     # 编辑 .env，把 CRAWL4AI_API_TOKEN 填成一串随�
 docker compose up -d
 ```
 
-- 镜像：`ghcr.io/campfire-code/web-data-collector:latest`，支持 x86 与 ARM。镜像较大（含浏览器），首次拉取需要几分钟。
+- 镜像：`ghcr.io/campfire-code/web-data-collector:latest`，仅提供 x86-64（amd64）版本。镜像较大（含浏览器），首次拉取需要几分钟。
 - **必须设置 `CRAWL4AI_API_TOKEN`**：上游规定不设令牌时，服务只在容器内部可访问，外面打不开。
 - 默认只监听本机（`127.0.0.1:11235`）。要给别人用，请自己加 HTTPS 反向代理并保管好令牌，不要把 11235 端口直接暴露到公网。
 - 容器内存上限 4GB（上游默认），Chrome 浏览器很占内存；内存紧张的机器请降低并发。
 - 篝火镜像只提供 x86-64（amd64）版本：构建时的浏览器自检在 arm64 模拟环境下会崩溃。Apple 芯片的 Mac、arm 服务器请改用上游官方镜像 `unclecode/crawl4ai`（见下方上游说明）。
 
+## 界面截图
+
+![网页试验台](docs/screenshot.png)
+
+![监控面板](docs/screenshot-monitor.png)
+
+> 截图是真实页面配上示例数据渲染的。试验台和监控面板的样式脚本由页面从公共 CDN 加载，部署的机器需要能访问外网才能显示正常样式。
+
 ## 怎么用
 
-1. 浏览器打开 `http://127.0.0.1:11235/playground`（网页是英文界面），在右上角 API token 框里填入 `.env` 里的令牌，点 Set。
+1. 浏览器打开 `http://127.0.0.1:11235/playground`（网页已汉化），在右上角「访问令牌」框里填入 `.env` 里的令牌，点「设置」。
 2. 在试验台里填一个公开网址，例如 `https://example.com`，运行后得到页面的 Markdown。
 3. 用接口调用（把令牌换成你的）：
 
@@ -38,7 +46,7 @@ curl -s http://127.0.0.1:11235/md \
   -d '{"url": "https://example.com"}'
 ```
 
-4. 健康检查：`curl http://127.0.0.1:11235/health`。监控面板：`http://127.0.0.1:11235/dashboard`。
+4. 健康检查：`curl http://127.0.0.1:11235/health`。监控面板（中文）：`http://127.0.0.1:11235/dashboard`。
 5. 定时采集：本工具不含调度界面，请用系统的定时任务（cron / 计划任务）定时调用上面的接口，自行保存结果；采集频率请放慢。
 
 ## 大模型提取（可选）
@@ -67,7 +75,8 @@ curl -s http://127.0.0.1:11235/md \
 
 ## 和上游的区别
 
-- 没有改动上游代码，只新增本说明、`campfire/` 部署文件、`tool.json` 和篝火发布流程；上游的 CI 工作流已删除。
+- 把网页试验台（`deploy/docker/static/playground`）和监控面板（`deploy/docker/static/monitor`）两个页面的界面文字汉化为中文，去掉了页面里的 GitHub 徽章、社交账号链接和上游标志；接口路径、参数名、返回内容不变。服务端 Python 代码没有改动。
+- 另新增本说明、`campfire/` 部署文件、`tool.json` 和篝火发布流程；上游的 CI 工作流已删除。
 - `campfire/docker-compose.yml` 沿用上游 compose 的安全加固（只读根文件系统、去除全部能力等），并把端口默认限制在本机，强制要求设置令牌。
 
 ## 归属与许可证

@@ -2,7 +2,7 @@
   "id": "a03",
   "slug": "web-data-collector",
   "name": "竞品价格 / 资讯采集器",
-  "version": "0.9.5-campfire.1",
+  "version": "0.9.5-campfire.2",
   "repo": "campfire-code/web-data-collector",
   "license": "Apache-2.0",
   "delivery": "docker",

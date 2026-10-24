@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crawl4AI Playground</title>
+    <title>网页采集试验台</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -144,48 +144,23 @@
     <!-- Header -->
     <header class="border-b border-border px-4 py-2 flex items-center">
         <h1 class="text-lg font-medium flex items-center space-x-4">
-            <span>🚀🤖 <span class="text-primary">Crawl4AI</span> Playground</span>
-
-            <!-- GitHub badges -->
-            <a href="https://github.com/unclecode/crawl4ai" target="_blank" class="flex space-x-1">
-                <img src="https://img.shields.io/github/stars/unclecode/crawl4ai?style=social"
-                     alt="GitHub stars" class="h-5">
-                <img src="https://img.shields.io/github/forks/unclecode/crawl4ai?style=social"
-                     alt="GitHub forks" class="h-5">
-            </a>
-
-            <!-- Docs -->
-            <a href="https://docs.crawl4ai.com" target="_blank"
-               class="text-xs text-secondary hover:text-primary underline flex items-center">
-                Docs
-            </a>
-
-            <!-- X (Twitter) follow -->
-            <a href="https://x.com/unclecode" target="_blank"
-               class="hover:text-primary flex items-center" title="Follow @unclecode on X">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                     class="w-4 h-4 fill-current mr-1">
-                    <path d="M22.46 6c-.77.35-1.6.58-2.46.69a4.27 4.27 0 001.88-2.35 8.53 8.53 0 01-2.71 1.04 4.24 4.24 0 00-7.23 3.87A12.05 12.05 0 013 4.62a4.24 4.24 0 001.31 5.65 4.2 4.2 0 01-1.92-.53v.05a4.24 4.24 0 003.4 4.16 4.31 4.31 0 01-1.91.07 4.25 4.25 0 003.96 2.95A8.5 8.5 0 012 19.55a12.04 12.04 0 006.53 1.92c7.84 0 12.13-6.49 12.13-12.13 0-.18-.01-.36-.02-.54A8.63 8.63 0 0024 5.1a8.45 8.45 0 01-2.54.7z"/>
-                </svg>
-                <span class="text-xs">@unclecode</span>
-            </a>
+            <span>🕷️ <span class="text-primary">网页采集</span>试验台</span>
         </h1>
 
         <div class="ml-auto flex items-center space-x-4">
             <!-- Token bar -->
             <div id="token-bar" class="flex items-center space-x-2">
-                <input id="token-input" type="password" placeholder="API token"
+                <input id="token-input" type="password" placeholder="访问令牌"
                        class="bg-dark border border-border rounded px-2 py-1 text-xs w-48">
-                <button id="token-save" class="px-2 py-1 bg-primary text-dark rounded text-xs hover:bg-primarydim">Set</button>
-                <button onclick="clearToken()" class="px-2 py-1 border border-border rounded text-xs hover:bg-surface">Clear</button>
+                <button id="token-save" class="px-2 py-1 bg-primary text-dark rounded text-xs hover:bg-primarydim">设置</button>
+                <button onclick="clearToken()" class="px-2 py-1 border border-border rounded text-xs hover:bg-surface">清除</button>
                 <span id="token-status" class="text-xs"></span>
             </div>
-            <a href="/dashboard" class="text-xs text-secondary hover:text-primary underline">Monitor</a>
+            <a href="/dashboard" class="text-xs text-secondary hover:text-primary underline">监控面板</a>
             <div class="flex space-x-2">
                 <button id="play-tab"
-                    class="px-3 py-1 rounded-t bg-surface border border-b-0 border-border text-primary">Playground</button>
-                <button id="stress-tab" class="px-3 py-1 rounded-t border border-border hover:bg-surface">Stress
-                    Test</button>
+                    class="px-3 py-1 rounded-t bg-surface border border-b-0 border-border text-primary">试验台</button>
+                <button id="stress-tab" class="px-3 py-1 rounded-t border border-border hover:bg-surface">压力测试</button>
             </div>
         </div>
     </header>
@@ -195,42 +170,42 @@
         <!-- Request Builder -->
         <section class="bg-surface rounded-lg border border-border overflow-hidden">
             <div class="px-4 py-2 border-b border-border flex items-center">
-                <h2 class="font-medium">Request Builder</h2>
+                <h2 class="font-medium">请求设置</h2>
                 <select id="endpoint" class="ml-auto bg-dark border border-border rounded px-2 py-1 text-sm">
-                    <option value="crawl">/crawl (batch)</option>
+                    <option value="crawl">/crawl（批量）</option>
                     <option value="crawl_stream">/crawl/stream</option>
                     <option value="md">/md</option>
                     <option value="llm">/llm</option>
                 </select>
             </div>
             <div class="p-4">
-                <label class="block mb-2 text-sm">URL(s) - one per line</label>
+                <label class="block mb-2 text-sm">网址（每行一个）</label>
                 <textarea id="urls" class="w-full bg-dark border border-border rounded p-2 h-32 text-sm mb-4"
                     spellcheck="false">https://example.com</textarea>
 
                 <!-- Specific options for /md endpoint -->
                 <details id="md-options" class="mb-4 hidden">
-                    <summary class="text-sm text-secondary cursor-pointer">/md Options</summary>
+                    <summary class="text-sm text-secondary cursor-pointer">/md 选项</summary>
                     <div class="mt-2 space-y-3 p-2 border border-border rounded">
                         <div>
-                            <label for="md-filter" class="block text-xs text-secondary mb-1">Filter Type</label>
+                            <label for="md-filter" class="block text-xs text-secondary mb-1">过滤方式</label>
                             <select id="md-filter" class="bg-dark border border-border rounded px-2 py-1 text-sm w-full">
-                                <option value="fit">fit - Adaptive content filtering</option>
-                                <option value="raw">raw - No filtering</option>
-                                <option value="bm25">bm25 - BM25 keyword relevance</option>
-                                <option value="llm">llm - LLM-based filtering</option>
+                                <option value="fit">fit：自适应正文过滤</option>
+                                <option value="raw">raw：不过滤</option>
+                                <option value="bm25">bm25：按关键词相关度过滤</option>
+                                <option value="llm">llm：大模型过滤</option>
                             </select>
                         </div>
                         <div>
-                            <label for="md-query" class="block text-xs text-secondary mb-1">Query (for BM25/LLM filters)</label>
-                            <input id="md-query" type="text" placeholder="Enter search terms or instructions" 
+                            <label for="md-query" class="block text-xs text-secondary mb-1">查询词（bm25 / llm 过滤时使用）</label>
+                            <input id="md-query" type="text" placeholder="输入搜索词或过滤要求" 
                                 class="bg-dark border border-border rounded px-2 py-1 text-sm w-full">
                         </div>
                         <div>
-                            <label for="md-cache" class="block text-xs text-secondary mb-1">Cache Mode</label>
+                            <label for="md-cache" class="block text-xs text-secondary mb-1">缓存模式</label>
                             <select id="md-cache" class="bg-dark border border-border rounded px-2 py-1 text-sm w-full">
-                                <option value="0">Write-Only (0)</option>
-                                <option value="1">Enabled (1)</option>
+                                <option value="0">只写入不读取（0）</option>
+                                <option value="1">启用缓存（1）</option>
                             </select>
                         </div>
                     </div>
@@ -238,11 +213,11 @@
 
                 <!-- Specific options for /llm endpoint -->
                 <details id="llm-options" class="mb-4 hidden">
-                    <summary class="text-sm text-secondary cursor-pointer">/llm Options</summary>
+                    <summary class="text-sm text-secondary cursor-pointer">/llm 选项</summary>
                     <div class="mt-2 space-y-3 p-2 border border-border rounded">
                         <div>
-                            <label for="llm-question" class="block text-xs text-secondary mb-1">Question</label>
-                            <input id="llm-question" type="text" value="What is this page about?" 
+                            <label for="llm-question" class="block text-xs text-secondary mb-1">问题</label>
+                            <input id="llm-question" type="text" value="这个页面讲了什么？" 
                                 class="bg-dark border border-border rounded px-2 py-1 text-sm w-full">
                         </div>
                     </div>
@@ -250,29 +225,29 @@
 
                 <!-- Advanced config for /crawl endpoints -->
                 <details id="adv-config" class="mb-4">
-                    <summary class="text-sm text-secondary cursor-pointer">Advanced Config <span
-                        class="text-xs text-primary">(JSON params)</span></summary>
+                    <summary class="text-sm text-secondary cursor-pointer">高级配置 <span
+                        class="text-xs text-primary">（JSON 参数）</span></summary>
 
                     <!-- Toolbar -->
                     <div class="flex items-center justify-end space-x-3 mt-2">
-                        <label for="cfg-type" class="text-xs text-secondary">Type:</label>
+                        <label for="cfg-type" class="text-xs text-secondary">类型：</label>
                         <select id="cfg-type"
                                 class="bg-dark border border-border rounded px-1 py-0.5 text-xs">
-                            <option value="CrawlerRunConfig">CrawlerRunConfig</option>
-                            <option value="BrowserConfig">BrowserConfig</option>
+                            <option value="CrawlerRunConfig">爬取配置（CrawlerRunConfig）</option>
+                            <option value="BrowserConfig">浏览器配置（BrowserConfig）</option>
                         </select>
 
                         <!-- help link -->
                         <a href="https://docs.crawl4ai.com/api/parameters/"
                            target="_blank"
                            class="text-xs text-primary hover:underline flex items-center space-x-1"
-                           title="Open parameter reference in new tab">
+                           title="在新标签页打开参数说明（英文）">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                                  class="w-4 h-4 fill-current">
                                  <path d="M13 3h8v8h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H13V3z"/>
                                  <path d="M5 5h4V3H3v6h2V5zm0 14v-4H3v6h6v-2H5z"/>
                             </svg>
-                            <span>Docs</span>
+                            <span>参数说明</span>
                         </a>
 
                         <span id="cfg-status" class="text-xs text-secondary ml-2"></span>
@@ -284,10 +259,10 @@
 
                 <div class="flex space-x-2">
                     <button id="run-btn" class="bg-primary text-dark px-4 py-2 rounded hover:bg-primarydim font-medium">
-                        Run (⌘/Ctrl+Enter)
+                        运行（⌘ / Ctrl + 回车）
                     </button>
                     <button id="export-btn" class="border border-border px-4 py-2 rounded hover:bg-surface hidden">
-                        Export Python Code
+                        导出 Python 代码
                     </button>
                 </div>
             </div>
@@ -298,14 +273,14 @@
             <div class="flex space-x-4">
                 <div id="status-badge" class="flex items-center">
                     <span class="w-3 h-3 rounded-full mr-2"></span>
-                    <span>Ready</span>
+                    <span>就绪</span>
                 </div>
                 <div>
-                    <span class="text-secondary">Time:</span>
+                    <span class="text-secondary">耗时：</span>
                     <span id="exec-time" class="text-light">-</span>
                 </div>
                 <div>
-                    <span class="text-secondary">Memory:</span>
+                    <span class="text-secondary">内存：</span>
                     <span id="exec-mem" class="text-light">-</span>
                 </div>
             </div>
@@ -315,9 +290,9 @@
         <!-- Update the Response Viewer section -->
         <section class="bg-surface rounded-lg border border-border overflow-hidden flex-1 flex flex-col">
             <div class="border-b border-border flex">
-                <button data-tab="response" class="tab-btn active px-4 py-2 border-r border-border">Response</button>
-                <button data-tab="python" class="tab-btn px-4 py-2 border-r border-border">Python</button>
-                <button data-tab="curl" class="tab-btn px-4 py-2">cURL</button>
+                <button data-tab="response" class="tab-btn active px-4 py-2 border-r border-border">返回结果</button>
+                <button data-tab="python" class="tab-btn px-4 py-2 border-r border-border">Python 代码</button>
+                <button data-tab="curl" class="tab-btn px-4 py-2">cURL 命令</button>
             </div>
             <div class="flex-1 overflow-auto relative">
                 <!-- Response Tab -->
@@ -325,7 +300,7 @@
                     <div class="absolute right-2 top-2">
                         <button class="copy-btn bg-surface border border-border rounded px-2 py-1 text-xs hover:bg-dark"
                             data-target="#response-content code">
-                            Copy
+                            复制
                         </button>
                     </div>
                     <pre id="response-content" class="p-4 text-sm h-full"><code class="json hljs">{}</code></pre>
@@ -336,7 +311,7 @@
                     <div class="absolute right-2 top-2">
                         <button class="copy-btn bg-surface border border-border rounded px-2 py-1 text-xs hover:bg-dark"
                             data-target="#python-content code">
-                            Copy
+                            复制
                         </button>
                     </div>
                     <pre id="python-content" class="p-4 text-sm h-full"><code class="python hljs"></code></pre>
@@ -347,7 +322,7 @@
                     <div class="absolute right-2 top-2">
                         <button class="copy-btn bg-surface border border-border rounded px-2 py-1 text-xs hover:bg-dark"
                             data-target="#curl-content code">
-                            Copy
+                            复制
                         </button>
                     </div>
                     <pre id="curl-content" class="p-4 text-sm h-full"><code class="bash hljs"></code></pre>
@@ -361,24 +336,24 @@
         class="hidden fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center p-4">
         <div class="bg-surface rounded-lg border border-accent w-full max-w-3xl max-h-[90vh] flex flex-col">
             <div class="px-4 py-2 border-b border-border flex items-center">
-                <h2 class="font-medium text-accent">🔥 Stress Test</h2>
+                <h2 class="font-medium text-accent">🔥 压力测试</h2>
                 <button id="close-stress" class="ml-auto text-secondary hover:text-light">&times;</button>
             </div>
 
             <div class="p-4 space-y-4 flex-1 overflow-auto">
                 <div class="grid grid-cols-3 gap-4">
                     <div>
-                        <label class="block text-sm mb-1">Total URLs</label>
+                        <label class="block text-sm mb-1">网址总数</label>
                         <input id="st-total" type="number" value="20"
                             class="w-full bg-dark border border-border rounded px-3 py-1">
                     </div>
                     <div>
-                        <label class="block text-sm mb-1">Chunk Size</label>
+                        <label class="block text-sm mb-1">每批数量</label>
                         <input id="st-chunk" type="number" value="5"
                             class="w-full bg-dark border border-border rounded px-3 py-1">
                     </div>
                     <div>
-                        <label class="block text-sm mb-1">Concurrency</label>
+                        <label class="block text-sm mb-1">并发数</label>
                         <input id="st-conc" type="number" value="2"
                             class="w-full bg-dark border border-border rounded px-3 py-1">
                     </div>
@@ -386,10 +361,10 @@
 
                 <div class="flex items-center">
                     <input id="st-stream" type="checkbox" class="mr-2">
-                    <label for="st-stream" class="text-sm">Enable streaming mode</label>
+                    <label for="st-stream" class="text-sm">启用流式模式</label>
                     <button id="st-run"
                         class="ml-auto bg-accent text-dark px-4 py-2 rounded hover:bg-opacity-90 font-medium">
-                        Run Stress Test
+                        开始压力测试
                     </button>
                 </div>
 
@@ -401,9 +376,9 @@
 
             <div class="px-4 py-2 border-t border-border text-sm text-secondary">
                 <div class="flex justify-between">
-                    <span>Completed: <span id="stress-completed">0</span>/<span id="stress-total">0</span></span>
-                    <span>Avg. Time: <span id="stress-avg-time">0</span>ms</span>
-                    <span>Peak Memory: <span id="stress-peak-mem">0</span>MB</span>
+                    <span>已完成：<span id="stress-completed">0</span>/<span id="stress-total">0</span></span>
+                    <span>平均耗时：<span id="stress-avg-time">0</span>ms</span>
+                    <span>内存峰值：<span id="stress-peak-mem">0</span>MB</span>
                 </div>
             </div>
         </div>
@@ -431,7 +406,7 @@
             const val = _tokenInput.value.trim();
             if (!val) return;
             sessionStorage.setItem('crawl4ai_token', val);
-            _tokenStatus.textContent = 'Token saved';
+            _tokenStatus.textContent = '令牌已保存';
             _tokenStatus.className = 'text-xs text-green-400';
             setTimeout(() => { _tokenStatus.textContent = ''; }, 2000);
         }
@@ -439,7 +414,7 @@
         function clearToken() {
             sessionStorage.removeItem('crawl4ai_token');
             _tokenInput.value = '';
-            _tokenStatus.textContent = 'Token cleared';
+            _tokenStatus.textContent = '令牌已清除';
             _tokenStatus.className = 'text-xs text-yellow-400';
             setTimeout(() => { _tokenStatus.textContent = ''; }, 2000);
         }
@@ -538,7 +513,7 @@
             const advConfig = document.getElementById('adv-config');
             
             // Advanced Config is /crawl-only; clear its status so a previous
-            // run's '✖ config error' does not linger on md/llm (#2260).
+            // run's '✖ 配置有误' does not linger on md/llm (#2260).
             setCfgStatus('', 'text-secondary');
 
             // Hide all option sections first
@@ -581,12 +556,12 @@
             try {
                 params = JSON.parse(text);
             } catch (err) {
-                setCfgStatus('✖ not valid JSON', 'text-red-400');
-                throw new Error('Advanced Config is not valid JSON: ' + err.message);
+                setCfgStatus('✖ 不是合法的 JSON', 'text-red-400');
+                throw new Error('高级配置不是合法的 JSON：' + err.message);
             }
             if (params === null || typeof params !== 'object' || Array.isArray(params)) {
-                setCfgStatus('✖ expected a JSON object', 'text-red-400');
-                throw new Error('Advanced Config must be a JSON object of parameters');
+                setCfgStatus('✖ 需要 JSON 对象', 'text-red-400');
+                throw new Error('高级配置必须是由参数组成的 JSON 对象');
             }
             if (!Object.keys(params).length) {
                 setCfgStatus('', 'text-secondary');  // no config is not an error
@@ -602,11 +577,11 @@
 
             if (!res.ok) {
                 const msg = await res.text();
-                setCfgStatus('✖ config error', 'text-red-400');
-                throw new Error(msg || 'Invalid config');
+                setCfgStatus('✖ 配置有误', 'text-red-400');
+                throw new Error(msg || '配置无效');
             }
 
-            setCfgStatus('✓ validated', 'text-green-400');
+            setCfgStatus('✓ 校验通过', 'text-green-400');
             // Send back what the user typed, not /config/dump's echo. dump()
             // fills in server-derived fields -- BrowserConfig gains generated
             // `headers` -- that the untrusted gate then refuses on /crawl, so
@@ -627,13 +602,13 @@
 
             if (status === 'success') {
                 badgeEl.classList.add('bg-green-500');
-                textEl.textContent = 'Success';
+                textEl.textContent = '成功';
             } else if (status === 'error') {
                 badgeEl.classList.add('bg-red-500');
-                textEl.textContent = 'Error';
+                textEl.textContent = '出错';
             } else {
                 badgeEl.classList.add('bg-yellow-500');
-                textEl.textContent = 'Processing...';
+                textEl.textContent = '处理中...';
             }
 
             if (time) {
@@ -641,7 +616,7 @@
             }
 
             if (memory !== undefined && peakMemory !== undefined) {
-                document.getElementById('exec-mem').textContent = `Δ${memory >= 0 ? '+' : ''}${memory}MB (Peak: ${peakMemory}MB)`;
+                document.getElementById('exec-mem').textContent = `Δ${memory >= 0 ? '+' : ''}${memory}MB （峰值：${peakMemory}MB）`;
             }
         }
 
@@ -658,8 +633,8 @@
             let msg = detail || `HTTP ${response.status}`;
             if (response.status === 401) {
                 msg += getToken()
-                    ? ' — token rejected; check the API token in the token bar (top right)'
-                    : ' — set your API token in the token bar (top right)';
+                    ? '（令牌被拒绝，请检查右上角填写的访问令牌）'
+                    : '（请先在右上角填写访问令牌）';
             }
             return msg;
         }
@@ -785,7 +760,7 @@
                     const url = urls[0];
                     const encodedUrl = encodeURIComponent(url);
                     // Get the question from the LLM-specific input
-                    const question = document.getElementById('llm-question').value.trim() || "What is this page about?";
+                    const question = document.getElementById('llm-question').value.trim() || "这个页面讲了什么？";
                     
                     response = await authFetch(`${api}/${encodedUrl}?q=${encodeURIComponent(question)}`, {
                         method: 'GET',
@@ -880,7 +855,7 @@
                 if (endpoint === 'llm') {
                     const url = urls[0];
                     const encodedUrl = encodeURIComponent(url);
-                    const question = document.getElementById('llm-question').value.trim() || "What is this page about?";
+                    const question = document.getElementById('llm-question').value.trim() || "这个页面讲了什么？";
                     generateSnippets(`${api}/${encodedUrl}?q=${encodeURIComponent(question)}`, null, 'GET');
                 } else {
                     // Use the same API endpoint for both streaming and non-streaming
@@ -975,7 +950,7 @@
                     peakMemory = Math.max(peakMemory, memory || 0);
                     totalTime += time;
 
-                    logEl.textContent += `[${index + 1}/${chunks.length}] ✔ ${time}ms | Peak ${memory}MB\n`;
+                    logEl.textContent += `[${index + 1}/${chunks.length}] ✔ ${time}ms | 峰值 ${memory}MB\n`;
                 } catch (error) {
                     time = Math.round(performance.now() - start);
                     logEl.textContent += `[${index + 1}/${chunks.length}] ✖ ${time}ms | ${error.message}\n`;
@@ -1006,7 +981,7 @@
                     }
 
                     if (active === 0 && index >= chunks.length) {
-                        logEl.textContent += '\n✅ Stress test completed\n';
+                        logEl.textContent += '\n✅ 压力测试完成\n';
                         resolve();
                     }
                 };
@@ -1051,7 +1026,7 @@
                     e.clearSelection();
                     // make button text "copied" for 1 second
                     const originalText = e.trigger.textContent;
-                    e.trigger.textContent = 'Copied!';
+                    e.trigger.textContent = '已复制';
                     setTimeout(() => {
                         e.trigger.textContent = originalText;
                     }, 1000);
