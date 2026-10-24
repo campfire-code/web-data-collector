@@ -1,3 +1,84 @@
+# 竞品价格 / 资讯采集器（Crawl4AI）
+
+> 篝火出品 · 收录于篝火 App 应用区 · 基于开源项目 [unclecode/crawl4ai](https://github.com/unclecode/crawl4ai)（Apache-2.0）
+
+> **合规声明（使用前必读）**
+> - 只采集**公开的、允许抓取的页面**；采集前先看目标网站的 `robots.txt` 和服务条款，不允许的不要抓。
+> - **不采集个人信息**，不绕过登录、验证码、反爬措施，不对网站造成访问压力（控制频率和并发）。
+> - 采集到的内容仅用于你自己合法的业务（例如公开资讯整理、自家商品价格的合规比对），版权归原网站所有；因使用本工具产生的后果由使用者自行承担。
+> - 本说明中的示例只使用 `https://example.com` 这类公开示例站。
+
+把网页变成干净的 Markdown 或结构化数据（JSON）。在自己的电脑或服务器上用 Docker 跑一个采集服务，带网页试验台（playground），可以填网址、点一下就看到结果，也可以用 HTTP 接口接进自己的脚本，做定时采集。
+
+## 部署（需要装好 Docker 的电脑或服务器，建议可用内存 4GB 以上）
+
+```bash
+mkdir web-data-collector && cd web-data-collector
+# 下载 Releases 里的 docker-compose.yml 和 .env.example
+cp .env.example .env     # 编辑 .env，把 CRAWL4AI_API_TOKEN 填成一串随机字符（openssl rand -hex 32 可生成）
+docker compose up -d
+```
+
+- 镜像：`ghcr.io/campfire-code/web-data-collector:latest`，支持 x86 与 ARM。镜像较大（含浏览器），首次拉取需要几分钟。
+- **必须设置 `CRAWL4AI_API_TOKEN`**：上游规定不设令牌时，服务只在容器内部可访问，外面打不开。
+- 默认只监听本机（`127.0.0.1:11235`）。要给别人用，请自己加 HTTPS 反向代理并保管好令牌，不要把 11235 端口直接暴露到公网。
+- 容器内存上限 4GB（上游默认），Chrome 浏览器很占内存；内存紧张的机器请降低并发。
+
+## 怎么用
+
+1. 浏览器打开 `http://127.0.0.1:11235/playground`（网页是英文界面），在右上角 API token 框里填入 `.env` 里的令牌，点 Set。
+2. 在试验台里填一个公开网址，例如 `https://example.com`，运行后得到页面的 Markdown。
+3. 用接口调用（把令牌换成你的）：
+
+```bash
+curl -s http://127.0.0.1:11235/md \
+  -H "Authorization: Bearer 你的令牌" \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://example.com"}'
+```
+
+4. 健康检查：`curl http://127.0.0.1:11235/health`。监控面板：`http://127.0.0.1:11235/dashboard`。
+5. 定时采集：本工具不含调度界面，请用系统的定时任务（cron / 计划任务）定时调用上面的接口，自行保存结果；采集频率请放慢。
+
+## 大模型提取（可选）
+
+想让大模型按你的要求从网页里提取结构化字段时才需要。在 `.env` 里填：
+
+- `LLM_BASE_URL`：你自己的大模型接口地址（兼容 OpenAI 格式）
+- `LLM_API_KEY`：你的密钥
+- `LLM_PROVIDER`：写成 `openai/你的模型名`
+
+三项都由你自己填，本工具不内置任何服务商；密钥只保存在你机器的 `.env` 里。不填则只能用不需要大模型的功能（网页转 Markdown、规则提取等）。
+
+## 验收用例
+
+| 操作 | 应得到 |
+|---|---|
+| `docker compose up -d` 约 1 分钟后，`curl http://127.0.0.1:11235/health` | 返回 200，JSON 里是 ok / healthy 状态 |
+| 浏览器打开 `/playground` | 看到试验台页面 |
+| 用上面的 `curl /md` 采集 `https://example.com`，带正确令牌 | 返回的 Markdown 里含 "Example Domain" |
+| 不带令牌调用 `/md` | 返回 401 |
+
+## 已知问题
+
+- 上游内置防内网访问（SSRF）保护：网址解析到内网或保留地址时会返回 `URL blocked`。如果你的网络用了"虚拟 IP"类代理（域名会解析成 198.18.x.x），采集公开网站也会被拦，需要改用直连 DNS 或换网络环境。
+- 页面里的 GitHub 徽章需要访问外网才能显示，不影响使用。
+
+## 和上游的区别
+
+- 没有改动上游代码，只新增本说明、`campfire/` 部署文件、`tool.json` 和篝火发布流程；上游的 CI 工作流已删除。
+- `campfire/docker-compose.yml` 沿用上游 compose 的安全加固（只读根文件系统、去除全部能力等），并把端口默认限制在本机，强制要求设置令牌。
+
+## 归属与许可证
+
+上游项目版权归原作者所有，按 Apache-2.0 许可证分发，全文见 [LICENSE](LICENSE)。
+
+---
+
+以下为上游 README 原文。
+
+---
+
 # 🚀🤖 Crawl4AI: the open-source web crawler for LLMs and AI agents
 
 <div align="center">

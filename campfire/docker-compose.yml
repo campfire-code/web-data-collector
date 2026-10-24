@@ -1,0 +1,45 @@
+# 竞品价格 / 资讯采集器 · 篝火出品（基于 unclecode/crawl4ai）
+# 启动：复制 .env.example 为 .env 并填写 CRAWL4AI_API_TOKEN，然后 docker compose up -d
+# 浏览器打开 http://127.0.0.1:11235/playground
+services:
+  web-data-collector:
+    image: ghcr.io/campfire-code/web-data-collector:latest
+    container_name: web-data-collector
+    restart: unless-stopped
+    ports:
+      # 默认只允许本机访问。要让局域网 / 服务器外部访问，把 127.0.0.1 去掉，并务必放在 HTTPS 反向代理之后
+      - "127.0.0.1:11235:11235"
+    env_file:
+      - path: .env
+        required: true
+    environment:
+      - CRAWL4AI_API_TOKEN=${CRAWL4AI_API_TOKEN:?请先复制 .env.example 为 .env 并填写 CRAWL4AI_API_TOKEN}
+    # 浏览器需要共享内存
+    shm_size: "1gb"
+    # 最小权限：去掉全部能力、禁止提权、只读根文件系统（与上游官方 compose 一致）
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/lib/redis:uid=999,gid=999,mode=0700
+      - /var/lib/crawl4ai/outputs:uid=999,gid=999,mode=0700
+      - /home/appuser/.crawl4ai:uid=999,gid=999,mode=0700
+      - /home/appuser/.cache/url_seeder:uid=999,gid=999,mode=0700
+      - /home/appuser/.gunicorn:uid=999,gid=999,mode=0700
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+          pids: 512
+        reservations:
+          memory: 1G
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11235/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    user: "appuser"
