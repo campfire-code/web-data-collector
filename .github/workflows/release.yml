@@ -12,3 +12,4 @@ jobs:
     with:
       context: .
       dockerfile: Dockerfile
+      platforms: linux/amd64
